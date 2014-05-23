@@ -39,8 +39,9 @@ public class ServerFrame extends JFrame implements ActionListener
 		
 		createAudioPanel();
 		createTextPanel();
-		
-		ipPanel.add(new JLabel("Number of Visible Students"));
+		JLabel listLabel=new JLabel("Number of Visible Students :");
+		listLabel.setFont(new Font("lucida console",Font.PLAIN,20));
+		ipPanel.add(listLabel);
 		ipPanel.add(studentNumberComboBox);
 		
 		textPanel=new JPanel();
@@ -105,8 +106,10 @@ public class ServerFrame extends JFrame implements ActionListener
 	    JPanel right2=new JPanel(new GridLayout(1,2,10,10));
 	    
 	      
-	      
-	    right1.add(new JTextArea(student.textMessage));
+	    JTextArea textMessageArea=new JTextArea(student.textMessage);
+	    textMessageArea.setFont(new Font("lucida console",Font.PLAIN,20));
+	    textMessageArea.setEditable(false);
+	    right1.add(new JScrollPane(textMessageArea));
 	    right1.setBackground(Color.green);
 	      
 	      
@@ -154,10 +157,15 @@ public class ServerFrame extends JFrame implements ActionListener
 		height = (int)screenSize.getHeight();
 		
 		ipLabel=new JLabel("IP Address : ");
+		ipLabel.setFont(new Font("lucida console",Font.PLAIN,20));
 		sessionIdLabel=new JLabel("Session ID : ");
+		sessionIdLabel.setFont(new Font("lucida console",Font.PLAIN,20));
 		
 		ipValueLabel=new JLabel(ipAddress);
+		ipValueLabel.setFont(new Font("lucida console",Font.PLAIN,20));
+		
 		sessionIdValueLabel=new JLabel(sessionId);
+		sessionIdValueLabel.setFont(new Font("lucida console",Font.PLAIN,20));
 		
 		studentNumberComboBox=new JComboBox();
 
@@ -183,17 +191,38 @@ public class ServerFrame extends JFrame implements ActionListener
 	private JPanel createStudentPanel(int i,Student student)
 	{
 		JPanel studentPanel=new JPanel();
-		studentPanel.setLayout(new GridLayout(1,5,5,5));
+		studentPanel.setLayout(new BorderLayout(10,10));
 		studentPanel.setBorder(BorderFactory.createTitledBorder(""));
-		ImagePanel imagePanel=new ImagePanel("/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg",30,30);
+		
+		JPanel westStudentPanel=new JPanel();
+		westStudentPanel.setLayout(new GridLayout(1,2,10,10));
+		
+		JPanel eastStudentPanel=new JPanel();
+		eastStudentPanel.setLayout(new GridLayout(1,2,10,10));
+		
+		ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,30,30);
 		imagePanel.setSize(100, 100);
-		studentPanel.add(imagePanel);
-		studentPanel.add(new JLabel(student.studentName));
+		westStudentPanel.add(imagePanel);
+		westStudentPanel.add(new JLabel(appendString(student.studentName)));
+		studentPanel.add(eastStudentPanel,BorderLayout.EAST);
+		
+		eastStudentPanel.add(addButton.get(i));
+		eastStudentPanel.add(deleteButton.get(i));
+		
+		studentPanel.add(westStudentPanel,BorderLayout.WEST);
 		studentPanel.add(new JLabel(student.doubtSubject));
-		studentPanel.add(addButton.get(i));
-		studentPanel.add(deleteButton.get(i));
+		studentPanel.add(eastStudentPanel,BorderLayout.EAST);
+		
 		return studentPanel;
 	}
+
+	public String appendString(String str)
+	{
+		for(int i=str.length();i<=30;i++)
+			str=str+" ";
+		return str;
+	}
+	
 	public Insets getInsets()
 	{
 		return new Insets(40,20,20,20);
@@ -330,4 +359,4 @@ class Main
 		sf.setVisible(true);
 		sf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-}
+}	
