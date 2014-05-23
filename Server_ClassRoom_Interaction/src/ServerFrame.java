@@ -8,8 +8,8 @@ public class ServerFrame extends JFrame implements ActionListener
 {
 	JPanel studentMsg;
 	JLabel ipLabel,sessionIdLabel,ipValueLabel,sessionIdValueLabel;
-	int width,height;
-	LinkedList <JLabel>picture=new LinkedList<JLabel>();
+	public int width,height;
+	
 	JComboBox studentNumberComboBox;
 	JPanel audioPanel,textPanel,studentPanel;
 	String ipAddress="127.0.0.1";
@@ -63,9 +63,6 @@ public class ServerFrame extends JFrame implements ActionListener
 		
 		studentPanel=new JPanel();
 		studentPanel.setLayout(new GridLayout(15,1,10,10));
-		for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString());i++)
-			studentPanel.add(createStudentPanel(i,new Student("Lavish","123.123.123","a.jpeg","Computer Graphics")));
-			
 		audioPanel.add(studentPanel,BorderLayout.CENTER);
 	}
 	private void createTextPanel()
@@ -76,24 +73,18 @@ public class ServerFrame extends JFrame implements ActionListener
 		
 		studentMsg=new JPanel();
 	    studentMsg.setLayout(new GridLayout(5,1,1,1));
-		
-	    for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString());i++)
-			studentMsg.add(createStudentTextMsgPanel(i,new Student("MOhit",ipAddress,"/home/Desktop/icon.png", "Computer Science")));
-	    textPanel.add(studentMsg,BorderLayout.CENTER);
+		textPanel.add(studentMsg,BorderLayout.CENTER);
 	}	
 
 	private JPanel createStudentTextMsgPanel(int i,Student student)
 	{
 
 		JPanel panel = new JPanel(new GridLayout(1,2,10,10));
-  	 	//panel.setBackground(Color.green);
-	      
+  	 	  
     	JPanel Leftpanel=new JPanel(new GridLayout(1,2,10,10));
     	JPanel Rightpanel=new JPanel(new BorderLayout(10,10));
     	 
-	    //Leftpanel.add(picture.get(i));
-	    //Leftpanel.add);
-    	ImagePanel imagePanel=new ImagePanel("/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg",width/4,100);
+	    ImagePanel imagePanel=new ImagePanel("/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg",width/4,100);
 		imagePanel.setSize(100, 100);
 		Leftpanel.add(imagePanel);
 		
@@ -131,68 +122,29 @@ public class ServerFrame extends JFrame implements ActionListener
 	    panel.add(Leftpanel);
 	    panel.add(Rightpanel);
 	     
-	      
-	  
-	      
-	      /*GridBagLayout layout = new GridBagLayout();
-         layout.preferredLayoutSize(panel);
-	     panel.setLayout(layout);        
-	      
-	
-	      GridBagConstraints gbc = new GridBagConstraints();
-	      gbc.weightx=1;
-		  gbc.weighty=1;     
-	      gbc.fill = GridBagConstraints.HORIZONTAL;
-	      gbc.gridx = 0;
-	      gbc.gridy = 0;
-	      gbc.ipady=20;
-	      gbc.ipadx=20;
-	      
-	      panel.add(picture.get(i),gbc);
-
-	      gbc.gridx = 2;
-	      gbc.gridy = 0;
-	      gbc.ipady=20;
-	      gbc.ipadx=20;
-	      
-	      panel.add(new JLabel(student.studentName),gbc); 
-	    
-	      gbc.gridx = 2;
-	      gbc.gridy = 1;
-	      gbc.ipady=20;
-	      gbc.ipadx=20;
-	      
-	      panel.add(new JLabel(student.doubtSubject),gbc); 
-	    
-	      gbc.gridx = 4;
-	      gbc.gridy = 0;
-	      gbc.ipady=30;
-	      gbc.fill = GridBagConstraints.HORIZONTAL;
-	      gbc.gridwidth = 3;
-	      panel.add(new JTextArea(student.textMessage),gbc);  
-	      */
-	  return panel;
+	      	  return panel;
 	  }
 
 	private void initializeGraphicComponents()
 	{
-		for(int i=0;i<Student.studentList.size();i++)
+		for(int i=0;i<Student.studentListAudio.size();i++)
 		{
 			addButton.add(new JButton("\u2714"));
 			addButton.get(i).setBackground(new Color(200,240,200));
 			deleteButton.add(new JButton("X"));
 			deleteButton.get(i).setBackground(new Color(240,200,200));
-			picture.add(new JLabel("hello"));
 			
-			
+			addButton.get(i).addActionListener(this);
+			deleteButton.get(i).addActionListener(this);
+		}
+		for(int i=0;i<Student.studentListText.size();i++)
+		{
 			addButtonText.add(new JButton("\u2714"));
 			addButtonText.get(i).setBackground(new Color(200,240,200));
 			deleteButtonText.add(new JButton("X"));
 			deleteButtonText.get(i).setBackground(new Color(240,200,200));
 			
-			addButton.get(i).addActionListener(this);
-			deleteButton.get(i).addActionListener(this);
-
+			
 			addButtonText.get(i).addActionListener(this);
 			deleteButtonText.get(i).addActionListener(this);
 		}
@@ -204,11 +156,12 @@ public class ServerFrame extends JFrame implements ActionListener
 		ipLabel=new JLabel("IP Address : ");
 		sessionIdLabel=new JLabel("Session ID : ");
 		
-		
 		ipValueLabel=new JLabel(ipAddress);
 		sessionIdValueLabel=new JLabel(sessionId);
 		
 		studentNumberComboBox=new JComboBox();
+
+		studentNumberComboBox.addItem("0");
 		studentNumberComboBox.addItem("1");
 		studentNumberComboBox.addItem("2");
 		studentNumberComboBox.addItem("3");
@@ -255,20 +208,21 @@ public class ServerFrame extends JFrame implements ActionListener
 			studentPanel.setLayout(new GridLayout(15,1,10,10));
 			studentPanel.setBackground(Color.white);
 			
-			for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentList.size();i++)
+			for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentListAudio.size();i++)
 			{
 				System.out.println(i);
-				studentPanel.add(createStudentPanel(i,Student.studentList.get(i)));
+				studentPanel.add(createStudentPanel(i,Student.studentListAudio.get(i)));
 			}
+			
 			audioPanel.add(studentPanel,BorderLayout.CENTER);
 			//////////////
 			studentMsg.setVisible(false);
 			studentMsg=new JPanel();
 			studentMsg.setLayout(new GridLayout(5,1,10,10));
 		
-			for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentList.size();i++)
+			for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentListText.size();i++)
 			{
-				studentMsg.add(createStudentTextMsgPanel(i,Student.studentList.get(i)));
+				studentMsg.add(createStudentTextMsgPanel(i,Student.studentListText.get(i)));
 			}
 			
 			textPanel.add(studentMsg,BorderLayout.CENTER);
@@ -276,47 +230,57 @@ public class ServerFrame extends JFrame implements ActionListener
 			return;
 		}
 		
-		for(int i=0;i<Student.studentList.size();i++)
+		for(int i=0;i<Student.studentListAudio.size();i++)
 		{
 			if(ae.getSource()==addButton.get(i))
 			{
-				
+				new GeneralDialogBox(this, Student.studentListAudio.get(i)).setVisible(true);
+				return;
 			}
 			if(ae.getSource()==deleteButton.get(i))
 			{
 				/////////////////////////////////
-				Student.studentList.remove(i);
+				Student.studentListAudio.remove(i);
 				////////////////////////////////
 				studentPanel.setVisible(false);
 				studentPanel=new JPanel();
 				studentPanel.setLayout(new GridLayout(15,1,10,10));
 				studentPanel.setBackground(Color.white);
 			
-				System.out.println("list value changed"+"   "+Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()));
-				for(int j=0;j<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && j<Student.studentList.size();j++)
+				for(int j=0;j<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && j<Student.studentListAudio.size();j++)
 				{
 					System.out.println(j);
-					studentPanel.add(createStudentPanel(j,Student.studentList.get(j)));
+					studentPanel.add(createStudentPanel(j,Student.studentListAudio.get(j)));
 				}
 				audioPanel.add(studentPanel,BorderLayout.CENTER);
 				System.out.println("Finish");
 				return;
 			}
+			
+		}
+		for(int i=0;i<Student.studentListText.size();i++)
+		{
 			if(ae.getSource()==deleteButtonText.get(i))
 			{
-				Student.studentList.remove(i);
+				Student.studentListText.remove(i);
 				//textPanel.setVisible(false);
 				//1createTextPanel();
 				
 				studentMsg.setVisible(false);
 				studentMsg=new JPanel(new GridLayout(5,1,1,1));
 				
-				for(int j=0;j<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && j<Student.studentList.size();j++)
+				for(int j=0;j<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && j<Student.studentListText.size();j++)
 				{
-					studentMsg.add(createStudentTextMsgPanel(j,Student.studentList.get(j)));
+					studentMsg.add(createStudentTextMsgPanel(j,Student.studentListText.get(j)));
 				}
 				textPanel.add(studentMsg,BorderLayout.CENTER);
 				return;
+			}
+			if(ae.getSource()==addButtonText.get(i))
+			{
+				new GeneralDialogBox(this, Student.studentListText.get(i)).setVisible(true);
+				return;
+			
 			}
 		}
 	}
@@ -326,22 +290,41 @@ class Main
 {
 	public static void main(String []args)
 	{
-		new Student("A","123.123.123","a.jpg","Computer Graphics");
-		new Student("B","123.123.123","a.jpg","Computer Graphics");
-		new Student("c","123.123.123","a.jpg","Computer Graphics");
-		new Student("D","123.123.123","a.jpg","Computer Graphics");
-		new Student("E","123.123.123","a.jpg","Computer Graphics");
-		new Student("F","123.123.123","a.jpg","Computer Graphics");
-		new Student("G","123.123.123","a.jpg","Computer Graphics");
-		new Student("H","123.123.123","a.jpg","Computer Graphics");
-		new Student("I","123.123.123","a.jpg","Computer Graphics");
-		new Student("J","123.123.123","a.jpg","Computer Graphics");
-		new Student("K","123.123.123","a.jpg","Computer Graphics");
-		new Student("L","123.123.123","a.jpg","Computer Graphics");
-		new Student("M","123.123.123","a.jpg","Computer Graphics");
-		new Student("N","123.123.123","a.jpg","Computer Graphics");
-		new Student("O","123.123.123","a.jpg","Computer Graphics");
-		new Student("P","123.123.123","a.jpg","Computer Graphics");
+		
+		new Student("A","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("B","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("C","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("D","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("E","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("F","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("G","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("H","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("I","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("J","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("K","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("L","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("M","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("N","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("O","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		new Student("P","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","audio");
+		
+		new Student("a","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("b","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("c","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("d","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("e","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("f","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("g","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("h","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("i","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("j","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("k","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("l","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("m","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("n","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("o","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		new Student("p","123.123.123","/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg","Computer Graphics","text");
+		
 		System.out.println("all Students initialized");
 		ServerFrame sf=new ServerFrame();
 		sf.setVisible(true);

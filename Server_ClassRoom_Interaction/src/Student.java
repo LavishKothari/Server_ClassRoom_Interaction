@@ -4,21 +4,33 @@ public class Student
 {
 	// this class stores the student information
 	//BufferedImage studentImage;
-	String studentName,macAddress,pic,doubtSubject,textMessage="Text............................................";
+	String studentName,macAddress,pic,doubtSubject,textMessage="Text............................................",doubtType;
 	
-	static LinkedList<Student> studentList=new LinkedList<Student>();
+	static LinkedList<Student> studentListText=new LinkedList<Student>();
+	static LinkedList<Student> studentListAudio=new LinkedList<Student>();
 	
-	Student(String studentName,String macAddress,String pic,String doubtSubject)
+	Student(String studentName,String macAddress,String pic,String doubtSubject,String doubtType)
 	{
+		this.doubtType=doubtType;
 		this.doubtSubject=doubtSubject;
 		this.studentName=studentName;
 		this.macAddress=macAddress;
 		this.pic=pic;
-		studentList.add(this);
+		if(doubtType.equals("audio"))
+		{
+			textMessage="";
+			studentListAudio.add(this);
+		}
+		else if(doubtType.equals("text"))
+			studentListText.add(this);
 	}
-	
-	public static LinkedList<Student> getStudentList()
+
+	public static LinkedList<Student> getStudentListText()
 	{
-		return studentList;
+		return studentListText;
+	}
+	public static LinkedList<Student> getStudentListAudio()
+	{
+		return studentListAudio;
 	}
 }

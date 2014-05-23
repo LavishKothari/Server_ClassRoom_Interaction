@@ -40,7 +40,8 @@ public class ImagePanel extends JPanel
         int x = (w - width)/2;  
         int y = (h - height)/2;  
         g2.drawImage(src, x, y, width, height, null);  
-        g2.dispose();  
+        g2.dispose(); 
+        
         return dst;  
     }  
     @Override
