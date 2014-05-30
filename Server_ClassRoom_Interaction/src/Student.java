@@ -10,10 +10,12 @@
  */
 import java.util.LinkedList;
 
+import javax.swing.JButton;
+
 public class Student
 {
 	// this class stores the student information
-	String studentName,macAddress,pic,doubtSubject,textMessage="hello lavish kothari how are you\nwhat are you doing?.................",doubtType;
+	String studentName,rollno,macAddress,pic,doubtSubject,textMessage,doubtType;
 	
 	/* This is the LinkedList that will store the list of students who are having a Text doubt*/
 	static LinkedList<Student> studentListText=new LinkedList<Student>(); 
@@ -24,8 +26,10 @@ public class Student
 	/* This Linked List will have the list of all the students */
 	static LinkedList<Student> studentList=new LinkedList<Student>();
 	
-	Student(String studentName,String macAddress,String pic,String doubtSubject,String doubtType)
+	Student(String studentName,String rollno,String macAddress,String pic,String doubtSubject,String textMessage,String doubtType)
 	{
+		this.textMessage=textMessage;
+		this.rollno=rollno;
 		this.doubtType=doubtType;
 		this.doubtSubject=doubtSubject;
 		this.studentName=studentName;
@@ -37,7 +41,18 @@ public class Student
 			studentListAudio.add(this);
 		}
 		else if(doubtType.equals("text"))// if the doubtType is audio then add the student to studentListText
+		{
+			System.out.println("Reaced in Student Object");
+			JButton tickButton=new JButton("\u2714");
+			JButton crossButton=new JButton("X");
+
+			ServerFrame.methodToAddActionListener(tickButton);
+			ServerFrame.methodToAddActionListener(crossButton);
+
+			ServerFrame.addButtonText.add(tickButton);
+			ServerFrame.deleteButtonText.add(crossButton);
 			studentListText.add(this);
+		}
 		else if(doubtType.equals(""))// if the doubtType is not specified then add it to simple studentList
 		{
 			studentList.add(this);

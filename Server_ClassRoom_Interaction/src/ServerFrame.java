@@ -10,6 +10,7 @@ import java.awt.event.*;
 
 public class ServerFrame extends JFrame implements ActionListener
 {
+	static ServerFrame currentObject;
 	JPanel topPanel,ipPanel,studentMsg,parentPanel,audioPanel,studentPanel,textPanel;
 	/* all the other gui components are now added to this parentPanel */
 	
@@ -19,14 +20,15 @@ public class ServerFrame extends JFrame implements ActionListener
 	JComboBox studentNumberComboBox;
 
 	String ipAddress=Server.serverIpAddress,sessionId=""+Server.serverSessionId;
-	LinkedList<JButton>addButton=new LinkedList<JButton>();
-	LinkedList<JButton>deleteButton=new LinkedList<JButton>();
+	static LinkedList<JButton>addButton=new LinkedList<JButton>();
+	static LinkedList<JButton>deleteButton=new LinkedList<JButton>();
 	
-	LinkedList<JButton>addButtonText=new LinkedList<JButton>();
-	LinkedList<JButton>deleteButtonText=new LinkedList<JButton>();
+	static LinkedList<JButton>addButtonText=new LinkedList<JButton>();
+	static LinkedList<JButton>deleteButtonText=new LinkedList<JButton>();
 	
 	ServerFrame()
 	{
+		currentObject=this;
 		/* initializeGraphicComponents();
 		 * 
 		 * this method will initialize all the graphic components displayed
@@ -262,6 +264,7 @@ public class ServerFrame extends JFrame implements ActionListener
 		JPanel east2=new JPanel();
 		east2.setLayout(new GridLayout(1,1,10,10));
 		ImagePanel imagePanel=new ImagePanel("/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg",width/4,100);
+		
 		imagePanel.setSize(100, 100);
 		west2.add(imagePanel);
 		
@@ -305,11 +308,15 @@ public class ServerFrame extends JFrame implements ActionListener
 		//finalPanel.setPreferredSize(new Dimension(audioPanel.getWidth(),studentPanelHeight));
 		//finalPanel.setBorder(new CompoundBorder(new LineBorder(Color.RED, 2), new EmptyBorder(0, 0, 0, 0)));
 		
-		
-		
-		ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,(int)(width*0.1),studentPanelHeight);
+		ResizeImage imagea=new ResizeImage(student.pic); //--new
+		JPanel imagePanel=imagea.getResizeImage(); // --new
 		imagePanel.setPreferredSize(new Dimension((int)(width*0.1),studentPanelHeight));
 		imagePanel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(0, 0, 0, 0)));
+		
+		
+		//ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,(int)(width*0.1),studentPanelHeight);
+		//1111
+		//imagePanel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(0, 0, 0, 0)));
 		
 		JPanel namePanel=new JPanel();
 		namePanel.setPreferredSize(new Dimension((int)(width*0.15),studentPanelHeight));
@@ -416,8 +423,10 @@ public class ServerFrame extends JFrame implements ActionListener
 		//finalPanel.setBorder(new CompoundBorder(new LineBorder(Color.RED, 2), new EmptyBorder(0, 0, 0, 0)));
 		
 		
+		ResizeImage imagea=new ResizeImage(student.pic); //--new
+		JPanel imagePanel=imagea.getResizeImage(); // --new
 		
-		ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,(int)(width*0.1),studentPanelHeight);
+		//ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,(int)(width*0.1),studentPanelHeight);
 		imagePanel.setPreferredSize(new Dimension((int)(width*0.1),studentPanelHeight));
 		imagePanel.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(0, 0, 0, 0)));
 		
@@ -637,5 +646,10 @@ public class ServerFrame extends JFrame implements ActionListener
 			}
 			
 		}
+	}
+
+	public static void methodToAddActionListener(JButton b) {
+		// TODO Auto-generated method stub
+		b.addActionListener(currentObject);
 	}
 }
