@@ -1,0 +1,49 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
+
+public class InitStudent {
+
+	
+	
+	public static void main(String args[])
+	{
+		
+		
+		try {
+	    BufferedReader in = new BufferedReader(new FileReader("s"));
+	    String str;
+	    while ((str = in.readLine()) != null)
+	        process(str);
+	    in.close();
+	} catch (IOException e) {
+		System.out.println();
+	}
+		
+		
+		
+	}
+
+	private static void process(String str) {
+		int doubtType;
+		String doubtSubject;
+		String studentName;
+		String macAddress;
+		
+		
+		
+		
+		String words[]=str.split(" ");
+		
+		
+		Student stud=new Student();
+		
+		
+		
+		
+		
+		
+	}
+}

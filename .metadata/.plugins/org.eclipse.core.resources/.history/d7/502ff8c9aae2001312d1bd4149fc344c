@@ -1,0 +1,8 @@
+public class Client 
+{
+	Socket server=new Socket("localhost",1234);
+	DataInputStream in=new DataInputStream(server.getInputStream());
+	DataOutputStream out=new DataOutputStream(server.getOutputStream());
+	 
+
+}

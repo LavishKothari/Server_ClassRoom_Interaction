@@ -1,0 +1,111 @@
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
+
+
+public class InitStudent {
+
+	
+	
+	public static void main(String args[])
+	{
+		new Server();
+		try
+		{
+			serverSocket=new ServerSocket(1234);
+		}
+		catch(IOException io)
+		{
+			System.out.println("You got an exception : "+io);
+		}
+		
+		try 
+		{
+			while(true)
+			{
+				client=serverSocket.accept();
+				
+				new LoginThread(serverObj);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+class LoginThread implements Runnable
+{
+	File myFile = new File("s.pdf");
+	String clientIpAddress,clientSessionID;
+	Socket client;
+	Server server;
+	 BufferedImage image; 
+	LoginThread(Server server)
+	{
+		this.server=server;
+		client=server.client;
+		Thread thread=new Thread(this);
+		thread.start();
+	}
+	@Override
+	public void run() 
+	{
+		while(true)
+		{
+			try {
+				
+				DataInputStream dis=new DataInputStream(client.getInputStream());
+				DataOutputStream dos=new DataOutputStream(client.getOutputStream());
+				
+				clientIpAddress=dis.readUTF();
+				clientSessionID=dis.readUTF();
+				
+				if(clientIpAddress.equals(server.serverIpAddress) && server.serverSessionId==Integer.parseInt(clientSessionID))
+				{
+					dos.writeUTF("1");
+					
+					
+					
+					  byte[] mybytearray = new byte[(int) myFile.length()];
+				      BufferedInputStream bis = new BufferedInputStream(new FileInputStream(myFile));
+				      bis.read(mybytearray, 0, mybytearray.length);
+				      OutputStream os = client.getOutputStream();
+				      os.write(mybytearray, 0, mybytearray.length);
+				      os.flush();
+				    
+				      
+				      
+				      
+				      
+				      image = ImageIO.read(client.getInputStream());
+				      
+				      
+				      client.close();
+					
+					
+					
+					/*
+					 * 
+					 */
+					break;
+				}
+				else{
+					dos.writeUTF("0");
+					continue;
+					
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+}

@@ -1,0 +1,151 @@
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
+
+import javax.imageio.ImageIO;
+import javax.xml.crypto.Data;
+
+import org.omg.PortableInterceptor.ServerIdHelper;
+
+class Server
+{
+    static Server serverObj;
+    static Socket client;
+    String serverIpAddress;
+    int serverSessionId;
+    Server()
+    {
+        serverObj=this;
+        Enumeration e = null;
+        try {
+            e = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        NetworkInterface n = (NetworkInterface) e.nextElement();
+        Enumeration ee = n.getInetAddresses();
+        InetAddress i = (InetAddress) ee.nextElement();
+        i = (InetAddress) ee.nextElement();
+        serverIpAddress=""+i;
+        serverSessionId=(int)(Math.random()*10000);
+       
+        System.out.println(serverIpAddress);
+        System.out.println(serverSessionId);
+       
+    }
+    
+    static ServerSocket serverSocket;
+    public static void main(String args[])
+    {
+        new Server();
+        try
+        {
+            serverSocket=new ServerSocket(1234);
+        }
+        catch(IOException io)
+        {
+            System.out.println("You got an exception : "+io);
+        }
+       
+        try
+        {
+            while(true)
+            {
+                client=serverSocket.accept();
+                System.out.println("a client accepted");
+                new LoginThread(serverObj);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class LoginThread implements Runnable
+{
+    File myFile = new File("s.txt");
+    String clientIpAddress,clientSessionID;
+    Socket client;
+    Server server;
+    BufferedImage image;
+    LoginThread(Server server)
+    {
+    	System.out.println("Thread started");
+        this.server=server;
+        client=server.client;
+        Thread thread=new Thread(this);
+        thread.start();
+    }
+    @Override
+    public void run()
+    {
+        while(true)
+        {
+            try
+            {
+               	System.out.println("hi");
+               /* DataInputStream dis=new DataInputStream(client.getInputStream());
+                DataOutputStream dos=new DataOutputStream(client.getOutputStream());
+                System.out.println("hello lavi");
+                clientIpAddress=dis.readUTF();
+                clientSessionID=dis.readUTF();
+               */
+               	
+               	BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+               	PrintWriter out =  new PrintWriter(client.getOutputStream());
+               	
+               	
+               	
+               	
+               	System.out.println(clientIpAddress+" "+clientSessionID);
+                if(clientIpAddress.equals(server.serverIpAddress) && server.serverSessionId==Integer.parseInt(clientSessionID))
+                {
+                    dos.writeUTF("1");
+                    /*
+                    FileOutputStream fos = new FileOutputStream("a.txt");
+                    BufferedOutputStream out = new BufferedOutputStream(fos);
+                    byte[] buffer = new byte[1024];
+                    int count;
+                    InputStream in = client.getInputStream();
+                    while((count=in.read(buffer)) >0){
+                        fos.write(buffer);
+                    }
+                    fos.close();
+                   
+                    image = ImageIO.read(client.getInputStream());
+                     
+                    InitStudent ist=new InitStudent(image);
+                  
+                    client.close();
+                    */
+                    break;
+                }
+                else
+                {
+                    dos.writeUTF("0");
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+}

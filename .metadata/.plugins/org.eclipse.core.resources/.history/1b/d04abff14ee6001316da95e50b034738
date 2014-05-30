@@ -1,0 +1,443 @@
+import java.util.LinkedList;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class ServerFrame extends JFrame implements ActionListener
+{
+	JPanel studentMsg=new JPanel();
+	JPanel parentPanel=new JPanel(); // this is the only panel that is added to the frame
+	/* all the other gui components are now added to this parentPanel */
+	
+	JLabel ipLabel,sessionIdLabel,ipValueLabel,sessionIdValueLabel,appName;
+	public int width,height;
+	
+	JComboBox studentNumberComboBox;
+	JPanel audioPanel=new JPanel();
+	JPanel textPanel=new JPanel();
+	JPanel studentPanel=new JPanel();
+	String ipAddress="127.0.0.1";
+	String sessionId="1234";
+	LinkedList<JButton>addButton=new LinkedList<JButton>();
+	LinkedList<JButton>deleteButton=new LinkedList<JButton>();
+	
+	LinkedList<JButton>addButtonText=new LinkedList<JButton>();
+	LinkedList<JButton>deleteButtonText=new LinkedList<JButton>();
+	
+	ServerFrame()
+	{
+		/* initializeGraphicComponents();
+		 * 
+		 * this method will initialize all the graphic components displayed
+		 * on the screen and ensuring that no NullPointerException is generated
+		 */
+		initializeGraphicComponents();
+		studentNumberComboBox.setSelectedIndex(5);
+		///////////////////////////////////////
+		studentPanel.setVisible(false);
+		studentPanel=new JPanel();
+		studentPanel.setLayout(new GridLayout(5,1,10,10));
+		
+		for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentListAudio.size();i++)
+			studentPanel.add(createStudentPanel(i,Student.studentListAudio.get(i)));
+		
+		audioPanel.add(studentPanel,BorderLayout.CENTER);
+		audioPanel.setBackground(Color.white);
+		studentMsg.setVisible(false);
+		studentMsg=new JPanel();
+		studentMsg.setLayout(new GridLayout(5,1,10,10));
+	
+		for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentListText.size();i++)
+		{
+			studentMsg.add(createStudentTextMsgPanel(i,Student.studentListText.get(i)));
+		}
+		
+		textPanel.add(studentMsg,BorderLayout.CENTER);
+		
+		///////////////////////////////////////
+		setSize(width*3/2,height*3/2); //setting the size of frame
+		setLocation(0,0); // setting the location of the frame
+		//this.setResizable(false); // setting the resizable attribute - false so that the user cannot resize the frame
+		
+		JPanel ipPanel=new JPanel(); // ip panel will contain the ip address and the auto-generated sessionID.
+		JPanel topPanel=new JPanel(); // top panel will containg the ipPanel and the app's Name.
+		
+		topPanel.setLayout(new GridLayout(1,2,10,10));
+		ipPanel.setLayout(new GridLayout(2,2,10,10));
+		ipPanel.setBorder(BorderFactory.createTitledBorder("")); // creating the border of the ipPanel
+		
+		/*
+		 * adding different components to the ipPanel
+		*/
+		ipPanel.add(ipLabel);
+		ipPanel.add(ipValueLabel);
+		ipPanel.add(sessionIdLabel);
+		ipPanel.add(sessionIdValueLabel);
+		
+		/*
+		 * there are two tabbedPanes in the center of the screen
+		 * each pane is a Panel 
+		 * there are two panels added to the JTabbedPane
+		 * first one is the audio Panel
+		 * and the second one is the texxt Panel
+		 */
+		
+		/* this is the method for creating the audio panel*/
+		createAudioPanel();
+		
+		/* this is the method for creating the text panel */
+		createTextPanel();
+		
+		
+		JLabel listLabel=new JLabel("Number of Visible Students :");
+		listLabel.setFont(new Font("lucida console",Font.PLAIN,20));
+		JPanel bottomPanel=new JPanel();
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		
+		/*
+		bottomPanel.add(listLabel,BorderLayout.CENTER);
+		bottomPanel.add(studentNumberComboBox,BorderLayout.EAST);
+		*/
+		
+		bottomPanel.add(listLabel);
+		bottomPanel.add(studentNumberComboBox);
+		textPanel=new JPanel();
+		textPanel.setLayout(new BorderLayout(10,10));
+		JTabbedPane tabbedPane=new JTabbedPane();
+		tabbedPane.addTab("Audio",audioPanel);
+		tabbedPane.addTab("Text",textPanel);
+		
+		topPanel.add(appName);
+		topPanel.add(ipPanel);
+		
+		parentPanel.add(topPanel,BorderLayout.NORTH);
+		parentPanel.add(tabbedPane,BorderLayout.CENTER);
+		parentPanel.add(bottomPanel,BorderLayout.SOUTH);
+		add(parentPanel);
+		studentNumberComboBox.addActionListener(this);		
+	}
+
+	private void initializeGraphicComponents()
+	{
+		/* this method will initialize all the graphic components displayed
+		 * on the screen and ensuring that no NullPointerException is generated
+		 */
+		parentPanel=new JPanel();
+		parentPanel.setLayout(new BorderLayout(10,10));
+		
+		appName=new JLabel("App Name");
+		appName.setFont(new Font("lucida console",Font.PLAIN,70));
+		for(int i=0;i<Student.studentListAudio.size();i++)
+		{
+			addButton.add(new JButton("\u2714"));
+			addButton.get(i).setBackground(new Color(200,240,200));
+			deleteButton.add(new JButton("X"));
+			deleteButton.get(i).setBackground(new Color(240,200,200));
+			
+			addButton.get(i).addActionListener(this);
+			deleteButton.get(i).addActionListener(this);
+		}
+		for(int i=0;i<Student.studentListText.size();i++)
+		{
+			addButtonText.add(new JButton("\u2714"));
+			addButtonText.get(i).setBackground(new Color(200,240,200));
+			deleteButtonText.add(new JButton("X"));
+			deleteButtonText.get(i).setBackground(new Color(240,200,200));
+			
+			
+			addButtonText.get(i).addActionListener(this);
+			deleteButtonText.get(i).addActionListener(this);
+		}
+		
+		/*
+		 * getting the screen dimensions to get the frame in maximized mode
+		 */
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		width = (int)screenSize.getWidth();
+		height = (int)screenSize.getHeight();
+		
+		ipLabel=new JLabel("IP Address : ");
+		ipLabel.setFont(new Font("lucida console",Font.PLAIN,30));
+		sessionIdLabel=new JLabel("Session ID : ");
+		sessionIdLabel.setFont(new Font("lucida console",Font.PLAIN,30));
+		
+		ipValueLabel=new JLabel(ipAddress);
+		ipValueLabel.setFont(new Font("lucida console",Font.PLAIN,30));
+		
+		sessionIdValueLabel=new JLabel(sessionId);
+		sessionIdValueLabel.setFont(new Font("lucida console",Font.PLAIN,30));
+		
+		studentNumberComboBox=new JComboBox();
+
+		
+		/* inserting different values in the  comboBox 
+		 * providing Proff the choice to select any number number of students to be currently visible
+		 */
+		studentNumberComboBox.addItem("0");
+		studentNumberComboBox.addItem("1");
+		studentNumberComboBox.addItem("2");
+		studentNumberComboBox.addItem("3");
+		studentNumberComboBox.addItem("4");
+		studentNumberComboBox.addItem("5");
+		studentNumberComboBox.addItem("6");
+		studentNumberComboBox.addItem("7");
+		studentNumberComboBox.addItem("8");
+		studentNumberComboBox.addItem("9");
+		studentNumberComboBox.addItem("10");
+		studentNumberComboBox.addItem("11");
+		studentNumberComboBox.addItem("12");
+		studentNumberComboBox.addItem("13");
+		studentNumberComboBox.addItem("14");
+		studentNumberComboBox.addItem("15");
+		
+	}
+	
+
+	private void createAudioPanel()
+	{
+		audioPanel=new JPanel();
+		audioPanel.setLayout(new BorderLayout(10,10));
+		
+		studentPanel=new JPanel();
+		studentPanel.setLayout(new GridLayout(5,1,10,10));
+		audioPanel.add(studentPanel,BorderLayout.CENTER);
+		audioPanel.setBackground(Color.white);
+		
+	}
+	private void createTextPanel()
+	{
+		textPanel=new JPanel();
+		textPanel.setLayout(new BorderLayout(10,10));
+	    
+		studentMsg=new JPanel();
+	    studentMsg.setLayout(new GridLayout(5,1,1,1));
+		textPanel.add(studentMsg,BorderLayout.CENTER);
+	}	
+
+	private JPanel createStudentTextMsgPanel(int i,Student student)
+	{
+		JPanel panel = new JPanel(new BorderLayout(10,10));
+		JPanel center1=new JPanel(new GridLayout(1,2,10,10));
+		JPanel east1=new JPanel();
+		east1.setLayout(new GridLayout(3,2,10,10));
+		
+		JPanel west2=new JPanel(new GridLayout(1,3,10,10));
+		JPanel east2=new JPanel();
+		east2.setLayout(new GridLayout(1,1,10,10));
+		ImagePanel imagePanel=new ImagePanel("/home/lavish/Server_ClassRoom_Interaction/Server_ClassRoom_Interaction/Images/a.jpg",width/4,100);
+		imagePanel.setSize(100, 100);
+		west2.add(imagePanel);
+		
+		  
+	    west2.add(new JLabel(student.studentName));
+	    west2.add(new JLabel(student.doubtSubject));
+
+		west2.setBackground(Color.gray);
+		
+	      
+		JTextArea textMessageArea=new JTextArea(student.textMessage);
+		textMessageArea.setFont(new Font("lucida console",Font.PLAIN,20));
+		textMessageArea.setEditable(false);
+		east2.add(new JScrollPane(textMessageArea));
+		    
+		center1.add(west2);
+		center1.add(east2);
+		   
+		    
+		east1.add(new JLabel(""));
+		east1.add(new JLabel(""));
+		    
+	    east1.add(addButtonText.get(i));
+		east1.add(deleteButtonText.get(i));
+			
+		east1.add(new JLabel(""));
+		east1.add(new JLabel(""));
+			
+	    panel.add(center1,BorderLayout.CENTER);
+	    panel.add(east1,BorderLayout.EAST);
+		    
+	    return panel;
+	}
+	private JPanel createStudentPanel(int i,Student student)
+	{
+		/*
+	    JPanel studentPanel=new JPanel();
+		studentPanel.setLayout(new BorderLayout(10,10));
+		studentPanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		JPanel westStudentPanel=new JPanel();
+		westStudentPanel.setLayout(new GridLayout(1,2,10,10));
+		
+		JPanel eastStudentPanel=new JPanel();
+		eastStudentPanel.setLayout(new GridLayout(3,2,10,10));
+
+		JPanel westsub1=new JPanel(new GridLayout(1,2,10,10));
+		
+		JPanel westsub2=new JPanel(new GridLayout(1,1,10,10));
+		
+         
+		JPanel img=new JPanel(new GridLayout(1,2,10,10));
+		ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,width/4,100);
+		//imagePanel.setSize(100, 100);
+		//imagePanel.setBorder(new EmptyBorder(0, 10, 0,20) );
+		img.add(imagePanel);
+		img.add(new JLabel("  "));
+		westsub1.add(img);
+		westsub1.add(new JLabel(appendString(student.studentName)));
+	    westsub2.add(new JLabel(student.doubtSubject));
+		
+		westStudentPanel.add(westsub1);
+		westStudentPanel.add(westsub2);
+		
+		
+		eastStudentPanel.add(new JLabel(""));
+		eastStudentPanel.add(new JLabel(""));
+		
+		eastStudentPanel.add(addButton.get(i));
+		
+		eastStudentPanel.add(deleteButton.get(i));
+		eastStudentPanel.add(new JLabel(""));
+		eastStudentPanel.add(new JLabel(""));
+		
+		studentPanel.add(westStudentPanel,BorderLayout.CENTER);
+		studentPanel.add(eastStudentPanel,BorderLayout.EAST);
+		
+		return studentPanel;
+		*/
+		
+		JPanel finalPanel=new JPanel();
+		finalPanel.setBackground(Color.WHITE);
+		finalPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 8, 7));
+		finalPanel.setPreferredSize(new Dimension((int)(width),(int)(height*0.22)));
+		
+		int studentPanelHeight=(int)(height*0.1);
+		
+		ImagePanel imagePanel=new ImagePanel(Student.studentListAudio.get(i).pic,(int)(width*0.1),studentPanelHeight);
+		imagePanel.setPreferredSize(new Dimension((int)(width*0.1),studentPanelHeight));
+		imagePanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		JPanel namePanel=new JPanel();
+		namePanel.setPreferredSize(new Dimension((int)(width*0.25),studentPanelHeight));
+		JLabel studentNameLabel=new JLabel(student.studentName);
+		studentNameLabel.setFont(new Font("lucida console",Font.PLAIN,20));
+		namePanel.add(studentNameLabel);
+		namePanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		JPanel doubtPanel=new JPanel();
+		doubtPanel.setPreferredSize(new Dimension((int)(width*0.45),studentPanelHeight));
+		JLabel doubtSubjectLabel=new JLabel(student.doubtSubject);
+		doubtSubjectLabel.setFont(new Font("lucida console",Font.PLAIN,20));
+		doubtPanel.add(doubtSubjectLabel);
+		doubtPanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		JPanel addButtonPanel=new JPanel();
+		addButtonPanel.setPreferredSize(new Dimension((int)(width*0.05),studentPanelHeight));
+		addButtonPanel.add(addButton.get(i));
+		addButtonPanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		JPanel deleteButtonPanel=new JPanel();
+		deleteButtonPanel.setPreferredSize(new Dimension((int)(width*0.05),studentPanelHeight));
+		deleteButtonPanel.add(deleteButton.get(i));
+		deleteButtonPanel.setBorder(BorderFactory.createTitledBorder(""));
+		
+		finalPanel.add(imagePanel);
+		finalPanel.add(namePanel);
+		finalPanel.add(doubtPanel);
+		finalPanel.add(addButtonPanel);
+		finalPanel.add(deleteButtonPanel);
+		
+		return finalPanel;
+		
+	}
+
+	public String appendString(String str)
+	{
+		for(int i=str.length();i<=30;i++)
+			str=str+" ";
+		return str;
+	}
+	
+	public Insets getInsets()
+	{
+		return new Insets(40,20,20,20);
+	}
+	
+	public void actionPerformed(ActionEvent ae)
+	{
+		if(ae.getSource()==studentNumberComboBox)
+		{
+			studentPanel.setVisible(false);
+			studentPanel=new JPanel();
+			studentPanel.setLayout(new GridLayout(5,1,10,10));
+			
+			for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentListAudio.size();i++)
+				studentPanel.add(createStudentPanel(i,Student.studentListAudio.get(i)));
+			
+			audioPanel.add(studentPanel,BorderLayout.CENTER);
+			audioPanel.setBackground(Color.WHITE);
+			
+			studentMsg.setVisible(false);
+			studentMsg=new JPanel();
+			studentMsg.setLayout(new GridLayout(5,1,10,10));
+		
+			for(int i=0;i<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && i<Student.studentListText.size();i++)
+			{
+				studentMsg.add(createStudentTextMsgPanel(i,Student.studentListText.get(i)));
+			}
+			
+			textPanel.add(studentMsg,BorderLayout.CENTER);
+			
+			return;
+		}
+		
+		for(int i=0;i<Student.studentListAudio.size();i++)
+		{
+			if(ae.getSource()==addButton.get(i))
+			{
+				new GeneralDialogBox(this, Student.studentListAudio.get(i)).setVisible(true);
+				return;
+			}
+			if(ae.getSource()==deleteButton.get(i))
+			{
+				Student.studentListAudio.remove(i);
+				
+				studentPanel.setVisible(false);
+				studentPanel=new JPanel();
+				studentPanel.setLayout(new GridLayout(5,1,10,10));
+				studentPanel.setBackground(Color.white);
+			
+				for(int j=0;j<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && j<Student.studentListAudio.size();j++)
+					studentPanel.add(createStudentPanel(j,Student.studentListAudio.get(j)));
+				
+				audioPanel.add(studentPanel,BorderLayout.CENTER);
+				audioPanel.setBackground(Color.WHITE);
+				return;
+			}
+			
+		}
+		for(int i=0;i<Student.studentListText.size();i++)
+		{
+			if(ae.getSource()==deleteButtonText.get(i))
+			{
+				Student.studentListText.remove(i);
+				
+				studentMsg.setVisible(false);
+				studentMsg=new JPanel();
+				studentMsg.setLayout(new GridLayout(5,1,1,1));
+				for(int j=0;j<Integer.parseInt(studentNumberComboBox.getSelectedItem().toString()) && j<Student.studentListText.size();j++)
+				{
+					studentMsg.add(createStudentTextMsgPanel(j,Student.studentListText.get(j)));
+				}
+				textPanel.add(studentMsg,BorderLayout.CENTER);
+				return;
+			}
+			if(ae.getSource()==addButtonText.get(i))
+			{
+				new GeneralDialogBox(this, Student.studentListText.get(i)).setVisible(true);
+				return;
+			
+			}
+		}
+	}
+}

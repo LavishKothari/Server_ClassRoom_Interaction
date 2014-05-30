@@ -1,0 +1,82 @@
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
+
+public class InitStudent 
+{
+	public BufferedImage bf;
+	InitStudent(BufferedImage img)
+	{
+		bf=deepCopy(img);
+	}
+	static BufferedImage deepCopy(BufferedImage bi) 
+	{
+		 ColorModel cm = bi.getColorModel();
+		 boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		 WritableRaster raster = bi.copyData(null);
+		 return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	}
+	
+	
+	public static void main(String args[])
+	{
+		
+		int doubtType;
+		String doubtSubject;
+		String studentName;
+		String macAddress;
+		String pic;
+		int rollNumber;
+		
+		try 
+		{
+		    BufferedReader in = new BufferedReader(new FileReader("a.txt"));
+		    pic="a.txt";
+		    studentName=in.readLine();
+		    macAddress=in.readLine();
+		    rollNumber=Integer.parseInt(in.readLine()); 
+		   
+		    in.close();
+		} 
+		catch (IOException e) 
+		{
+			System.out.println();
+		}
+		
+		
+		
+	}
+
+	private static void process(String str) 
+	{
+		int doubtType;
+		String doubtSubject;
+		String studentName;
+		String macAddress;
+		String pic;
+		
+		
+		
+		
+		studentName=words[0];
+		macAddress=words[1];
+		doubtSubject=words[2];
+		doubtType=Integer.parseInt(words[3]);
+		pic=bf;	
+		
+		
+		
+		Student stud=new Student(studentName,);
+		
+		
+		
+		
+		
+		
+	}
+}
